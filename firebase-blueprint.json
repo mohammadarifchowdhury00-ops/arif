@@ -1,0 +1,265 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private student profile, learning statistics, and gamification state",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "Firebase Auth UID" },
+        "displayName": { "type": "string", "description": "Student display name" },
+        "email": { "type": "string", "description": "Google account email (PII)" },
+        "photoUrl": { "type": "string", "description": "Profile photo URL" },
+        "role": { "type": "string", "enum": ["student"], "description": "User role" },
+        "totalXp": { "type": "integer", "description": "Total accumulated XP" },
+        "dailyXp": { "type": "integer", "description": "Daily XP" },
+        "weeklyXp": { "type": "integer", "description": "Weekly XP" },
+        "monthlyXp": { "type": "integer", "description": "Monthly XP" },
+        "level": { "type": "integer", "description": "Current learning level" },
+        "streakDays": { "type": "integer", "description": "Consecutive study days" },
+        "lastStudyDate": { "type": "string", "description": "Last study date YYYY-MM-DD" },
+        "dailyGoalMinutes": { "type": "integer", "description": "Daily study target in minutes" },
+        "todayStudyMinutes": { "type": "integer", "description": "Study minutes completed today" },
+        "totalStudyMinutes": { "type": "integer", "description": "Lifetime study minutes" },
+        "completedLessonsCount": { "type": "integer", "description": "Number of completed lessons" },
+        "badges": { "type": "array", "description": "Earned achievement badge IDs" },
+        "isSuspended": { "type": "boolean", "description": "Admin suspension flag" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Server timestamp on creation" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Server timestamp on update" }
+      },
+      "required": ["userId", "displayName", "email", "role", "totalXp", "dailyXp", "weeklyXp", "monthlyXp", "level", "streakDays", "lastStudyDate", "dailyGoalMinutes", "todayStudyMinutes", "totalStudyMinutes", "completedLessonsCount", "badges", "createdAt", "updatedAt"]
+    },
+    "LessonProgress": {
+      "title": "LessonProgress",
+      "description": "Progress across the 17 sections of an IRODORI lesson",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "bookId": { "type": "string" },
+        "lessonNumber": { "type": "integer" },
+        "completedSections": { "type": "array" },
+        "vocabMastered": { "type": "integer" },
+        "grammarScore": { "type": "integer" },
+        "gameHighScore": { "type": "integer" },
+        "challengePassed": { "type": "boolean" },
+        "completed": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "bookId", "lessonNumber", "completedSections", "vocabMastered", "grammarScore", "gameHighScore", "challengePassed", "completed", "createdAt", "updatedAt"]
+    },
+    "ScriptMastery": {
+      "title": "ScriptMastery",
+      "description": "Individual mastery record for Hiragana, Katakana, or Kanji",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "scriptType": { "type": "string", "enum": ["hiragana", "katakana", "kanji"] },
+        "character": { "type": "string" },
+        "correctCount": { "type": "integer" },
+        "attemptCount": { "type": "integer" },
+        "mastered": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "scriptType", "character", "correctCount", "attemptCount", "mastered", "createdAt", "updatedAt"]
+    },
+    "XpTransaction": {
+      "title": "XpTransaction",
+      "description": "Append-only deduplicated XP reward transaction",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "activityKey": { "type": "string" },
+        "sourceType": { "type": "string" },
+        "xpAmount": { "type": "integer" },
+        "description": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "activityKey", "sourceType", "xpAmount", "description", "createdAt"]
+    },
+    "ExamAttempt": {
+      "title": "ExamAttempt",
+      "description": "Completed mock examination or section test record",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "examType": { "type": "string" },
+        "title": { "type": "string" },
+        "score": { "type": "integer" },
+        "totalQuestions": { "type": "integer" },
+        "durationSeconds": { "type": "integer" },
+        "categoryBreakdown": { "type": "object" },
+        "passed": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "examType", "title", "score", "totalQuestions", "durationSeconds", "categoryBreakdown", "passed", "createdAt"]
+    },
+    "StudentNotification": {
+      "title": "StudentNotification",
+      "description": "Student notification item with read status",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "category": { "type": "string" },
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "isRead": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "category", "title", "body", "isRead", "createdAt", "updatedAt"]
+    },
+    "LeaderboardEntry": {
+      "title": "LeaderboardEntry",
+      "description": "Public leaderboard projection without PII",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoUrl": { "type": "string" },
+        "totalXp": { "type": "integer" },
+        "dailyXp": { "type": "integer" },
+        "weeklyXp": { "type": "integer" },
+        "monthlyXp": { "type": "integer" },
+        "level": { "type": "integer" },
+        "streakDays": { "type": "integer" },
+        "badgeCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "displayName", "totalXp", "dailyXp", "weeklyXp", "monthlyXp", "level", "streakDays", "badgeCount", "createdAt", "updatedAt"]
+    },
+    "Announcement": {
+      "title": "Announcement",
+      "description": "Admin-published announcement for all learners",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "body": { "type": "string" },
+        "category": { "type": "string" },
+        "published": { "type": "boolean" },
+        "authorEmail": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "body", "category", "published", "authorEmail", "createdAt", "updatedAt"]
+    },
+    "LearningVideo": {
+      "title": "LearningVideo",
+      "description": "Admin-uploaded Japanese learning video",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "descriptionBn": { "type": "string" },
+        "videoUrl": { "type": "string" },
+        "bookId": { "type": "string" },
+        "lessonNumber": { "type": "integer" },
+        "published": { "type": "boolean" },
+        "featuredOnHome": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "descriptionBn", "videoUrl", "bookId", "lessonNumber", "published", "featuredOnHome", "createdAt", "updatedAt"]
+    },
+    "CustomLesson": {
+      "title": "CustomLesson",
+      "description": "Admin-managed lesson supplement or custom curriculum entry",
+      "type": "object",
+      "properties": {
+        "bookId": { "type": "string" },
+        "lessonNumber": { "type": "integer" },
+        "titleJp": { "type": "string" },
+        "titleBn": { "type": "string" },
+        "canDoBn": { "type": "string" },
+        "vocabSummary": { "type": "string" },
+        "grammarSummary": { "type": "string" },
+        "cultureNoteBn": { "type": "string" },
+        "published": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["bookId", "lessonNumber", "titleJp", "titleBn", "canDoBn", "vocabSummary", "grammarSummary", "cultureNoteBn", "published", "createdAt", "updatedAt"]
+    },
+    "CustomQuestion": {
+      "title": "CustomQuestion",
+      "description": "Admin-managed exam question bank item",
+      "type": "object",
+      "properties": {
+        "examCategory": { "type": "string" },
+        "promptJp": { "type": "string" },
+        "promptBn": { "type": "string" },
+        "options": { "type": "array" },
+        "correctIndex": { "type": "integer" },
+        "explanationBn": { "type": "string" },
+        "difficulty": { "type": "string" },
+        "published": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["examCategory", "promptJp", "promptBn", "options", "correctIndex", "explanationBn", "difficulty", "published", "createdAt", "updatedAt"]
+    },
+    "AdminActivityLog": {
+      "title": "AdminActivityLog",
+      "description": "Audit trail for admin actions",
+      "type": "object",
+      "properties": {
+        "adminEmail": { "type": "string" },
+        "action": { "type": "string" },
+        "targetType": { "type": "string" },
+        "targetId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["adminEmail", "action", "targetType", "targetId", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private student profile documents"
+    },
+    "/users/{userId}/lesson_progress/{lessonKey}": {
+      "schema": { "$ref": "#/entities/LessonProgress" },
+      "description": "Student IRODORI lesson progress"
+    },
+    "/users/{userId}/script_mastery/{charId}": {
+      "schema": { "$ref": "#/entities/ScriptMastery" },
+      "description": "Student Kana & Kanji mastery"
+    },
+    "/users/{userId}/xp_transactions/{txId}": {
+      "schema": { "$ref": "#/entities/XpTransaction" },
+      "description": "Deduplicated XP ledger"
+    },
+    "/users/{userId}/exam_attempts/{attemptId}": {
+      "schema": { "$ref": "#/entities/ExamAttempt" },
+      "description": "Student mock examination history"
+    },
+    "/users/{userId}/notifications/{notifId}": {
+      "schema": { "$ref": "#/entities/StudentNotification" },
+      "description": "Student notification inbox"
+    },
+    "/leaderboard/{userId}": {
+      "schema": { "$ref": "#/entities/LeaderboardEntry" },
+      "description": "Public leaderboard without PII"
+    },
+    "/announcements/{announcementId}": {
+      "schema": { "$ref": "#/entities/Announcement" },
+      "description": "Admin-managed announcements"
+    },
+    "/learning_videos/{videoId}": {
+      "schema": { "$ref": "#/entities/LearningVideo" },
+      "description": "Admin-uploaded learning videos"
+    },
+    "/custom_lessons/{lessonId}": {
+      "schema": { "$ref": "#/entities/CustomLesson" },
+      "description": "Admin-managed custom lesson materials"
+    },
+    "/custom_questions/{questionId}": {
+      "schema": { "$ref": "#/entities/CustomQuestion" },
+      "description": "Admin-managed examination question bank"
+    },
+    "/admin_activity_logs/{logId}": {
+      "schema": { "$ref": "#/entities/AdminActivityLog" },
+      "description": "Restricted admin audit log"
+    }
+  }
+}
